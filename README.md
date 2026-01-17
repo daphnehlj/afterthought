@@ -1,125 +1,89 @@
-# Welcome
+# **Afterthought 📝**
 
-## Project info
+AI-powered journaling with behavioral insights
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Afterthought is a journaling app that helps users reflect between therapy sessions by capturing not just what they write, but how they write. By analyzing timing, pauses, backspaces, and recurring themes, the app surfaces gentle, non-clinical insights and adaptive writing prompts.
 
-## How can I edit this code?
+Users stay fully in control of what insights remain private or are shared with a therapist.
 
-There are several ways of editing your application.
+# Features
 
-**Use Lovable**
+   Freeform journaling (multiple entries per day)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+   Daily AI-generated prompts (regenerated on refresh)
 
-Changes made via Lovable will be committed automatically to this repo.
+   Mood tracking with calendar view
 
-**Use your preferred IDE**
+   Access to all journals from the current day
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+   AI-powered reflections with private/shared toggles
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+   End-of-session summaries with simulated “Send” action
 
-Follow these steps:
+# AI Feedback Loop
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+   User behavior → AI interpretation → UX change
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Tracked signals:
 
-# Step 3: Install the necessary dependencies.
-npm i
+   App open/close times
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+   Typing pauses and backspaces
+
+   Writing speed and hesitation
+
+   Repeated content themes
+
+
+# Gemini analyzes aggregated behavioral data to:
+
+   Detect hesitation or avoidance patterns
+
+   Generate gentle follow-up prompts (one at a time)
+
+   Adapt prompt tone and frequency
+
+   No diagnoses. No clinical language.
+
+# Tech Stack
+
+   Frontend
+
+   React + Vite
+
+   LocalStorage
+
+   Backend
+
+   Node.js + Express
+
+   Google Gemini 2.5 Flash
+
+   Real-time terminal logs for AI reasoning
+
+# Running the Project
+
+## Frontend
+cd frontend
+npm install
 npm run dev
-```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Runs at http://localhost:8080
 
-**Use GitHub Codespaces**
+Create frontend/.env.local:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+VITE_API_BASE_URL=http://localhost:3001
 
-## What technologies are used for this project?
+## Backend
+cd backend
+npm install
+node server.js
 
-This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Create backend/.env:
 
-## Backend Setup
+GEMINI_API_KEY=your_api_key_here
 
-This project includes a backend server for persistent storage, behavioral analytics, and secure Gemini API integration.
 
-### Quick Start
-
-1. **Navigate to backend directory:**
-   ```bash
-   cd backend
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Create `.env` file:**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Then edit `.env` and add your Gemini API key:
-   ```env
-   GEMINI_API_KEY=your_api_key_here
-   PORT=4000
-   DB_PATH=./data/journal.db
-   ```
-   
-   Get your API key from: https://makersuite.google.com/app/apikey
-
-4. **Start the backend server:**
-   ```bash
-   npm run dev
-   ```
-   
-   The server will run on `http://localhost:4000`
-
-5. **Configure frontend:**
-   
-   Create `.env.local` in the project root:
-   ```env
-   VITE_API_URL=http://localhost:4000
-   ```
-
-6. **Start the frontend:**
-   ```bash
-   # In the project root
-   npm run dev
-   ```
-
-See `backend/README.md` for more details.
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Get an API key from https://makersuite.google.com/app/apikey
