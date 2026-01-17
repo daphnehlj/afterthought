@@ -5,7 +5,7 @@ const moods = [
   { emoji: "(¬`‸´¬)", label: "Frustrated" },
   { emoji: "(っ◞‸◟ c)", label: "Sad" },
   { emoji: "(੭ ;´ - `;)੭", label: "Tired" },
-  { emoji: "(•_•)", label: "Neutral" },
+  { emoji: "( •_• )", label: "Neutral" },
   { emoji: "( - ‿-)", label: "Happy" },
   { emoji: "٩(ˊᗜˋ*)و", label: "Great" },
 ];
@@ -18,7 +18,7 @@ interface MoodSelectorProps {
 const MoodSelector = ({ selectedMood, onSelectMood }: MoodSelectorProps) => {
   return (
     <div className="paper-grid p-6 bg-[#D7CDC1]/70">
-      <p className="font-serif italic text-lg mb-4 text-[#411E03]/80">Today's vibe</p>
+      <p className="font-serif italic text-lg mb-4 text-[#411E03]/80">How are you feeling today?</p>
       <div className="grid grid-cols-3 gap-2">
         {moods.map((mood, index) => (
           <motion.button
@@ -28,7 +28,7 @@ const MoodSelector = ({ selectedMood, onSelectMood }: MoodSelectorProps) => {
             transition={{ delay: index * 0.05 }}
             onClick={() => onSelectMood(mood.label)}
             className={cn(
-              "w-16 h-14 flex items-center justify-center rounded-md transition-all",
+              "w-full h-14 flex items-center justify-center rounded-md transition-all",
               "border hover:scale-105",
               selectedMood === mood.label
                 ? "border-[#94AA78] bg-[#94AA78]/20"

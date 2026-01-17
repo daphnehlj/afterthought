@@ -18,7 +18,7 @@ import {
 // Sample entries with kaomojis
 const sampleEntries: Record<string, { mood: string; preview: string }> = {
   "2026-01-15": { mood: "( - ‿-)", preview: "Had a wonderful conversation..." },
-  "2026-01-14": { mood: "(•_•)", preview: "Just a regular day..." },
+  "2026-01-14": { mood: " ( •_• )", preview: "Just a regular day..." },
   "2026-01-12": { mood: "(੭ ;´ - `;)੭", preview: "Feeling tired today..." },
   "2026-01-10": { mood: "٩(ˊᗜˋ*)و", preview: "Everything clicked today!" },
   "2026-01-08": { mood: "(っ◞‸◟ c)", preview: "Missing old friends..." },

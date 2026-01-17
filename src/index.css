@@ -13,7 +13,7 @@
   :root {
     /* Core palette converted to HSL */
     /* #D7CDC1 - warm cream background */
-    --background: 30 20% 80%;
+    --background: 30 20% 85%;
     /* #411E03 - deep brown foreground */
     --foreground: 25 92% 14%;
 
@@ -241,6 +241,29 @@
       inset -4px 0 8px hsl(59 20% 30% / 0.3),
       2px 4px 8px hsl(25 20% 25% / 0.15);
   }
+  /* Analysis book (leftmost) */
+.analysis-book {
+  background: #D7CDC1;
+  color: hsl(var(--foreground));
+  position: relative;
+
+  box-shadow:
+    inset -3px 0 6px hsl(25 20% 40% / 0.15),
+    2px 4px 8px hsl(25 20% 25% / 0.15);
+}
+
+/* Vertical title on Analysis spine */
+.analysis-book .book-title {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+
+  opacity: 0.85;
+}
 
   /* Scrapbook decorative elements */
   .scrapbook-tape {

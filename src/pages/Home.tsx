@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "@/components/Layout";
@@ -6,6 +6,47 @@ import MoodSelector from "@/components/MoodSelector";
 import Bookshelf from "@/components/Bookshelf";
 import KeyboardKey from "@/components/KeyboardKey";
 import { Edit3 } from "lucide-react";
+
+function useTypewriter(text: string, speed = 220, startDelay = 1000) {
+  const [shown, setShown] = useState("");
+
+  useEffect(() => {
+    let i = 0;
+    let cancelled = false;
+
+    setShown("");
+
+    const start = window.setTimeout(() => {
+      const tick = () => {
+        if (cancelled) return;
+        i += 1;
+        setShown(text.slice(0, i));
+        if (i < text.length) window.setTimeout(tick, speed);
+      };
+      tick();
+    }, startDelay);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(start);
+    };
+  }, [text, speed, startDelay]);
+
+  return shown;
+}
+
+const BlinkingCursor = ({ className = "" }: { className?: string }) => (
+  <span
+    className={`inline-block align-baseline ${className}`}
+    style={{ animation: "blink 1s steps(1) infinite" }}
+    aria-hidden="true"
+  >
+    |
+    <style>{`
+      @keyframes blink { 50% { opacity: 0; } }
+    `}</style>
+  </span>
+);
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,6 +59,29 @@ const Home = () => {
     return "Good Evening";
   };
 
+  const fullGreeting = `${getGreeting()},`;
+  const typedGreeting = useTypewriter(fullGreeting, 220, 1000);
+
+  const spaceIndex = typedGreeting.indexOf(" ");
+  const typedGood =
+    spaceIndex === -1 ? typedGreeting : typedGreeting.slice(0, spaceIndex);
+  const typedRest =
+    spaceIndex === -1 ? "" : typedGreeting.slice(spaceIndex + 1);
+
+  const isTyping = typedGreeting.length < fullGreeting.length;
+  const isTypingFirstWord = isTyping && spaceIndex === -1;
+
+  const [showEndCursor, setShowEndCursor] = useState(false);
+
+  useEffect(() => {
+    if (!isTyping && typedGreeting.length === fullGreeting.length) {
+      setShowEndCursor(true);
+      const t = window.setTimeout(() => setShowEndCursor(false), 2000);
+      return () => window.clearTimeout(t);
+    }
+    if (isTyping) setShowEndCursor(false);
+  }, [isTyping, typedGreeting, fullGreeting]);
+
   const handleStartJournal = () => {
     navigate("/prompt", { state: { mood: selectedMood } });
   };
@@ -25,17 +89,13 @@ const Home = () => {
   return (
     <Layout>
       <div className="min-h-screen px-4 py-8 md:px-8 relative">
-        {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Tape decorations */}
           <div className="absolute top-12 -left-4 w-16 h-5 bg-[#D6B38D]/35 rotate-[25deg]" />
           <div className="absolute top-32 right-2 w-10 h-4 bg-[#D6B38D]/30 -rotate-12" />
-          {/* Sticker decorations */}
           <div className="absolute bottom-48 left-6 w-8 h-8 rounded-full bg-[#94AA78]/15 border border-[#94AA78]/20" />
           <div className="absolute top-64 right-8 w-6 h-6 bg-[#8A895F]/10 rotate-45" />
         </div>
 
-        {/* Header with greeting */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,30 +103,38 @@ const Home = () => {
         >
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-5xl md:text-7xl font-pixel leading-tight text-[#411E03]">
-                Good
+              <h1 className="text-6xl md:text-8xl font-pixel leading-none text-[#411E03]">
+                {typedGood}
+                {isTypingFirstWord && <BlinkingCursor className="ml-1" />}
               </h1>
-              <h1 className="text-5xl md:text-7xl font-serif italic leading-tight -mt-2 text-[#411E03]">
-                {getGreeting().split(" ")[1]}
+
+              <h1 className="text-6xl md:text-8xl font-serif italic leading-none -mt-1 text-[#411E03]">
+                {typedRest}
+                {(isTyping && !isTypingFirstWord) || showEndCursor ? (
+                  <BlinkingCursor className="ml-1" />
+                ) : null}
               </h1>
             </div>
+
             <KeyboardKey size="lg" className="mt-2">
               <span className="text-xs font-pixel">Home</span>
             </KeyboardKey>
           </div>
 
-          {/* Username tag */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="inline-block mt-4 px-4 py-1 bg-[#D6B38D]/40 rounded-md"
-          >
-            <span className="font-serif italic text-lg text-[#411E03]">friend</span>
-          </motion.div>
+          {typedGreeting.length === fullGreeting.length && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-block mt-6 px-4 py-1 bg-[#D6B38D]/40 rounded-md"
+            >
+              <span className="font-serif italic text-2xl text-[#411E03]">
+                friend
+              </span>
+            </motion.div>
+          )}
         </motion.header>
 
-        {/* Weather/info bubble */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -78,38 +146,36 @@ const Home = () => {
           </div>
         </motion.div>
 
-        {/* Mood selector */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <MoodSelector 
-            selectedMood={selectedMood} 
-            onSelectMood={setSelectedMood} 
+          <MoodSelector
+            selectedMood={selectedMood}
+            onSelectMood={setSelectedMood}
           />
         </motion.div>
 
-        {/* Stamp-style journal prompt */}
         <motion.div
           initial={{ opacity: 0, rotate: 2 }}
           animate={{ opacity: 1, rotate: 1 }}
           transition={{ delay: 0.5 }}
-          className="mb-8"
+          className="mt-12 mb-8"
         >
           <button
             onClick={handleStartJournal}
             className="w-full max-w-sm mx-auto block p-6 bg-[#D7CDC1] border-2 border-dashed border-[#846851]/50 shadow-md transform rotate-1 hover:rotate-0 transition-transform"
           >
             <p className="font-pixel text-xl text-center text-[#411E03]">
-              i want to write<br />
-              about...
+              today's
+              <br />
+              thoughts...
             </p>
           </button>
         </motion.div>
 
-        {/* Quick write button */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -121,13 +187,15 @@ const Home = () => {
           </KeyboardKey>
         </motion.div>
 
-        {/* Bookshelf */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
+          className="mt-16 w-full"
         >
-          <Bookshelf />
+          <div className="origin-top scale-[1.25] w-full">
+            <Bookshelf />
+          </div>
         </motion.div>
       </div>
     </Layout>

@@ -6,9 +6,10 @@ const Bookshelf = () => {
   const navigate = useNavigate();
 
   const books = [
+    { title: "Reflections", color: "analysis" as const, path: "/analysis", slant: "left" as const },
     { title: "Daily Thoughts", color: "sage" as const, path: "/write", slant: "none" as const },
     { title: "History", color: "olive" as const, path: "/history", slant: "none" as const },
-    { title: "Reflections", color: "analysis" as const, path: "/analysis", slant: "left" as const },
+    { title: "Profile", color: "profile" as const, path: "/profile", slant: "left" as const },
   ];
 
   return (
@@ -20,8 +21,6 @@ const Bookshelf = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        {/* Decorative checked book */}
-        <BookSpine title="" color="checked" className="h-40 w-10 opacity-60" />
         
         {books.map((book, index) => (
           <motion.div
