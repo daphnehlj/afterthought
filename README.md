@@ -47,13 +47,13 @@ Users stay fully in control of what insights remain private or are shared with a
 
 # Tech Stack
 
-   Frontend
+   Frontend:
 
    React + Vite
 
    LocalStorage
 
-   Backend
+   Backend:
 
    Node.js + Express
 
