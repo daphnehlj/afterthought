@@ -18,7 +18,7 @@ interface MoodSelectorProps {
 const MoodSelector = ({ selectedMood, onSelectMood }: MoodSelectorProps) => {
   return (
     <div className="paper-grid p-6 bg-[#D7CDC1]/70">
-      <p className="font-serif italic text-lg mb-4 text-[#411E03]/80">How are you feeling today?</p>
+      <p className="font-serif italic text-2xl font-bold mb-4 text-[#411E03]/80">How are you feeling today?</p>
       <div className="grid grid-cols-3 gap-2">
         {moods.map((mood, index) => (
           <motion.button
@@ -36,7 +36,7 @@ const MoodSelector = ({ selectedMood, onSelectMood }: MoodSelectorProps) => {
             )}
             title={mood.label}
           >
-            <span className="text-sm font-pixel leading-none">{mood.emoji}</span>
+            <span className="text-xl font-pixel font-bold leading-none">{mood.emoji}</span>
           </motion.button>
         ))}
       </div>
