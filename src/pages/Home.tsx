@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import Layout from "@/components/Layout";
 import MoodSelector from "@/components/MoodSelector";
 import Bookshelf from "@/components/Bookshelf";
-import KeyboardKey from "@/components/KeyboardKey";
-import { Edit3 } from "lucide-react";
 import { eventTracker } from "@/lib/eventTracking";
 import { storageService } from "@/lib/storage";
 import { behavioralAnalytics } from "@/lib/behavioralAnalytics";
@@ -59,7 +57,6 @@ const Home = () => {
   const [dailyPrompt, setDailyPrompt] = useState<string | null>(null);
   const [promptLoading, setPromptLoading] = useState(false);
 
-  // Load today's mood if exists
   useEffect(() => {
     const today = format(new Date(), "yyyy-MM-dd");
     const todayMood = storageService.getMoodByDate(today);
@@ -68,7 +65,6 @@ const Home = () => {
     }
   }, []);
 
-  // Load daily prompt - regenerate on every page refresh
   useEffect(() => {
     const loadPrompt = async () => {
       const settings = storageService.getSettings();
@@ -83,30 +79,31 @@ const Home = () => {
       eventTracker.track("prompt_viewed", { page: "home" });
 
       try {
-        // Get recent entries to detect upcoming events
         const entries = storageService.getEntries();
         const recentEntries = entries.slice(-5);
-        const allContent = recentEntries.map(e => e.content).join(" ");
+        const allContent = recentEntries.map((e) => e.content).join(" ");
 
-        // Look for date mentions (interviews, exams, meetings, etc.)
         const datePatterns = [
           /(?:tomorrow|next week|next month|on \w+day|this \w+day)/gi,
           /(?:interview|exam|meeting|appointment|deadline)/gi,
         ];
-        const hasUpcomingEvents = datePatterns.some(pattern => pattern.test(allContent));
+        const hasUpcomingEvents = datePatterns.some((pattern) =>
+          pattern.test(allContent)
+        );
 
-        // Aggregate behavior with context
         const behaviorSummary = behavioralAnalytics.aggregate();
         const recentEntry = behavioralAnalytics.getRecentEntryExcerpt();
 
-        // Add context about upcoming events if detected
         const enhancedSummary = {
           ...behaviorSummary,
           has_upcoming_events: hasUpcomingEvents,
-          recent_content_themes: allContent.slice(-500), // Last 500 chars for context
+          recent_content_themes: allContent.slice(-500),
         };
 
-        const prompt = await geminiService.generatePrompt(enhancedSummary, recentEntry);
+        const prompt = await geminiService.generatePrompt(
+          enhancedSummary,
+          recentEntry
+        );
         setDailyPrompt(prompt);
       } catch (error) {
         console.error("Failed to generate prompt:", error);
@@ -117,7 +114,7 @@ const Home = () => {
     };
 
     loadPrompt();
-  }, []); // Empty deps - regenerates on mount/refresh
+  }, []);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -166,6 +163,19 @@ const Home = () => {
   return (
     <Layout>
       <div className="min-h-screen px-4 py-8 md:px-8 relative">
+        <div className="absolute top-4 right-10 z-30">
+          <img
+            src="/assets/logo.png"
+            alt="Afterthought logo"
+            className="
+              w-[10vw] max-w-[140px] min-w-[72px] h-auto opacity-95
+              transition-transform duration-300 ease-out
+              hover:-rotate-6 hover:-translate-y-1
+            "
+          />
+        </div>
+
+
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-12 -left-4 w-16 h-5 bg-[#D6B38D]/35 rotate-[25deg]" />
           <div className="absolute top-32 right-2 w-10 h-4 bg-[#D6B38D]/30 -rotate-12" />
@@ -192,10 +202,6 @@ const Home = () => {
                 ) : null}
               </h1>
             </div>
-
-            {/* <KeyboardKey size="lg" className="mt-2">
-              <span className="text-xs font-pixel">Home</span>
-            </KeyboardKey> */}
           </div>
 
           {typedGreeting.length === fullGreeting.length && (
@@ -220,11 +226,13 @@ const Home = () => {
         >
           <div className="bg-[#94AA78]/80 text-[#411E03] px-4 py-2 rounded-2xl rounded-br-sm shadow-md">
             {promptLoading ? (
-          <span className="font-pixel text-sm">{'>^..^<'}</span>
+              <span className="font-pixel text-xl">{">^..^<"}</span>
             ) : dailyPrompt ? (
-              <span className="font-pixel text-sm">{dailyPrompt}</span>
+              <span className="font-pixel text-xl">{dailyPrompt}</span>
             ) : (
-              <span className="font-pixel text-xm">A quiet day for reflection</span>
+              <span className="font-pixel text-sm">
+                A quiet day for reflection
+              </span>
             )}
           </div>
         </motion.div>
@@ -235,60 +243,40 @@ const Home = () => {
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <MoodSelector
-            selectedMood={selectedMood}
-            onSelectMood={handleMoodSelect}
-          />
+          <MoodSelector selectedMood={selectedMood} onSelectMood={handleMoodSelect} />
         </motion.div>
 
-    
-
-        {/* <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="fixed left-4 bottom-28 z-40"
-        >
-          <KeyboardKey size="lg" onClick={handleStartJournal}>
-            <Edit3 className="w-5 h-5" />
-          </KeyboardKey>
-        </motion.div> */}
-
         <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="mt-16 w-full"
-      >
-        <div className="relative w-full origin-top scale-[1.25]">
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-16 w-full"
+        >
+          <div className="relative w-full origin-top scale-[1.25]">
+            <Bookshelf />
 
-          <Bookshelf />
-
-
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="flex items-end justify-center h-full px-4">
-              {/* Left: Today's thoughts box - positioned left of center */}
-              <div className="pointer-events-auto -translate-y-28 -translate-x-[250px]">
-                <button
-                  onClick={handleStartJournal}
-                  className="w-[260px] p-5 bg-[#D7CDC1] border-2 border-dashed border-[#846851]/50 shadow-md transition-transform duration-200 rotate-2 hover:rotate-3"
-                >
-                  <p className="font-pixel text-xl text-center text-[#411E03]">
-                    Today&apos;s
-                    <br />
-                    thoughts...
-                  </p>
-                </button>
-              </div>
-
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="flex items-end justify-center h-full px-4">
+                <div className="pointer-events-auto -translate-y-28 -translate-x-[250px]">
+                  <button
+                    onClick={handleStartJournal}
+                    className="w-[260px] p-5 bg-[#D7CDC1] border-2 border-dashed border-[#846851]/50 shadow-md transition-transform duration-200 rotate-2 hover:rotate-3"
+                  >
+                    <p className="font-pixel text-xl text-center text-[#411E03]">
+                      Today&apos;s
+                      <br />
+                      thoughts...
+                    </p>
+                  </button>
+                </div>
               </div>
             </div>
+
           </div>
         </motion.div>
       </div>
     </Layout>
   );
-}
-
+};
 
 export default Home;
