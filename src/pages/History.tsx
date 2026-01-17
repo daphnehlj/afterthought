@@ -171,7 +171,7 @@ const History = () => {
                     {format(day, "d")}
                   </span>
                   {moodEmoji && (
-                    <span className="text-[10px] mt-0.5 font-pixel leading-none">{moodEmoji}</span>
+                    <span className="text-[10px] mt-0.5 font-bold font-pixel leading-none">{moodEmoji}</span>
                   )}
                 </motion.button>
               );

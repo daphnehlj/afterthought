@@ -90,8 +90,11 @@ const Prompt = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          className="mt-32"
         >
-          <Bookshelf />
+          <div className="scale-[1.25] origin-center">
+            <Bookshelf booksTranslateX="" />
+          </div>
         </motion.div>
       </div>
     </Layout>

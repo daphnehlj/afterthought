@@ -25,6 +25,7 @@ const Analysis = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
   const [followUpRecommended, setFollowUpRecommended] = useState(false);
+  const [continuationPrompt, setContinuationPrompt] = useState<string | null>(null);
   const [showRawEntries, setShowRawEntries] = useState(false);
   const [sessionSummary, setSessionSummary] = useState<any>(null);
 
@@ -69,6 +70,20 @@ const Analysis = () => {
         setInsights(merged);
         setFollowUpRecommended(geminiResponse.follow_up_recommended);
         storageService.saveInsights(merged);
+
+        // Generate context-aware continuation prompt if follow-up is recommended
+        if (geminiResponse.follow_up_recommended) {
+          try {
+            const continuationPrompt = await geminiService.generateContinuationPrompt(
+              behaviorSummary,
+              recentEntry
+            );
+            setContinuationPrompt(continuationPrompt);
+          } catch (error) {
+            console.error("Failed to generate continuation prompt:", error);
+            setContinuationPrompt("Want to write a bit more about that?");
+          }
+        }
       } catch (error) {
         console.error("Failed to load insights:", error);
         // Use fallback insights
@@ -311,7 +326,7 @@ const Analysis = () => {
                   <div className="text-center">
                     <h3 className="font-pixel text-lg text-[#411E03] mb-2">Continue?</h3>
                     <p className="font-serif text-[#846851] mb-4">
-                      There might be more to explore here. Want to write about it?
+                      {continuationPrompt || "Want to write a bit more about that?"}
                     </p>
                     <button
                       onClick={() => {

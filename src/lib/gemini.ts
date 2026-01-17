@@ -151,6 +151,29 @@ export class GeminiService {
     }
   }
 
+  async generateContinuationPrompt(
+    behaviorSummary: BehaviorSummary,
+    recentEntryExcerpt?: string | null
+  ): Promise<string> {
+    console.log("[GEMINI] Generating context-aware continuation prompt...");
+
+    try {
+      const result = await ApiClient.getGeminiInsights({
+        behavior_summary: behaviorSummary,
+        recent_entry_excerpt: recentEntryExcerpt,
+        session_id: eventTracker.getSessionId(),
+        type: 'continuation',
+      });
+
+      const prompt = result.suggested_prompt || "Want to write a bit more about that?";
+      console.log(`[GEMINI] Generated continuation prompt: "${prompt}"`);
+      return prompt;
+    } catch (error) {
+      console.error("[GEMINI] Failed to generate continuation prompt:", error);
+      return "Want to write a bit more about that?";
+    }
+  }
+
   async generateSessionSummary(
     behaviorSummary: BehaviorSummary,
     entries: Array<{ content: string; timestamp: number }>

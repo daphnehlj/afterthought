@@ -193,9 +193,9 @@ const Home = () => {
               </h1>
             </div>
 
-            <KeyboardKey size="lg" className="mt-2">
+            {/* <KeyboardKey size="lg" className="mt-2">
               <span className="text-xs font-pixel">Home</span>
-            </KeyboardKey>
+            </KeyboardKey> */}
           </div>
 
           {typedGreeting.length === fullGreeting.length && (
@@ -203,10 +203,10 @@ const Home = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="inline-block mt-6 px-4 py-1 bg-[#D6B38D]/40 rounded-md"
+              className="inline-block mt-12 px-4 py-1 bg-[#D6B38D]/40 rounded-md"
             >
-              <span className="font-serif italic text-2xl text-[#411E03]">
-                friend
+              <span className="font-serif italic text-6xl text-[#411E03]">
+                Daphne
               </span>
             </motion.div>
           )}
@@ -220,11 +220,11 @@ const Home = () => {
         >
           <div className="bg-[#94AA78]/80 text-[#411E03] px-4 py-2 rounded-2xl rounded-br-sm shadow-md">
             {promptLoading ? (
-              <span className="font-pixel text-sm">Loading prompt...</span>
+          <span className="font-pixel text-sm">{'>^..^<'}</span>
             ) : dailyPrompt ? (
               <span className="font-pixel text-sm">{dailyPrompt}</span>
             ) : (
-              <span className="font-pixel text-sm">A quiet day for reflection</span>
+              <span className="font-pixel text-xm">A quiet day for reflection</span>
             )}
           </div>
         </motion.div>
@@ -241,25 +241,9 @@ const Home = () => {
           />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, rotate: 2 }}
-          animate={{ opacity: 1, rotate: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 mb-8"
-        >
-          <button
-            onClick={handleStartJournal}
-            className="w-full max-w-sm mx-auto block p-6 bg-[#D7CDC1] border-2 border-dashed border-[#846851]/50 shadow-md transform rotate-1 hover:rotate-0 transition-transform"
-          >
-            <p className="font-pixel text-xl text-center text-[#411E03]">
-              today's
-              <br />
-              thoughts...
-            </p>
-          </button>
-        </motion.div>
+    
 
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
@@ -268,21 +252,43 @@ const Home = () => {
           <KeyboardKey size="lg" onClick={handleStartJournal}>
             <Edit3 className="w-5 h-5" />
           </KeyboardKey>
-        </motion.div>
+        </motion.div> */}
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-16 w-full"
-        >
-          <div className="origin-top scale-[1.25] w-full">
-            <Bookshelf />
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mt-16 w-full"
+      >
+        <div className="relative w-full origin-top scale-[1.25]">
+
+          <Bookshelf />
+
+
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="flex items-end justify-center h-full px-4">
+              {/* Left: Today's thoughts box - positioned left of center */}
+              <div className="pointer-events-auto -translate-y-28 -translate-x-[250px]">
+                <button
+                  onClick={handleStartJournal}
+                  className="w-[260px] p-5 bg-[#D7CDC1] border-2 border-dashed border-[#846851]/50 shadow-md transition-transform duration-200 rotate-2 hover:rotate-3"
+                >
+                  <p className="font-pixel text-xl text-center text-[#411E03]">
+                    Today&apos;s
+                    <br />
+                    thoughts...
+                  </p>
+                </button>
+              </div>
+
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
     </Layout>
   );
-};
+}
+
 
 export default Home;
