@@ -21,8 +21,7 @@ const PromptCard = ({ prompt, onContinue, onSkip }: PromptCardProps) => {
           <span className="italic font-serif text-2xl md:text-3xl">of the day</span>
         </h2>
         <div className="flex gap-2">
-          <span className="text-4xl">🙂</span>
-          <span className="text-3xl opacity-70">💕</span>
+          <span className="text-4xl">₍^. .^₎Ⳋ</span>
         </div>
       </div>
 
