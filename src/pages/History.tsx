@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import PaperContainer from "@/components/PaperContainer";
+import { eventTracker } from "@/lib/eventTracking";
+import { storageService } from "@/lib/storage";
 import {
   format,
   startOfMonth,
@@ -15,13 +17,18 @@ import {
   subMonths,
 } from "date-fns";
 
-// Sample entries with kaomojis
-const sampleEntries: Record<string, { mood: string; preview: string }> = {
-  "2026-01-15": { mood: "( - ‿-)", preview: "Had a wonderful conversation..." },
-  "2026-01-14": { mood: " ( •_• )", preview: "Just a regular day..." },
-  "2026-01-12": { mood: "(੭ ;´ - `;)੭", preview: "Feeling tired today..." },
-  "2026-01-10": { mood: "٩(ˊᗜˋ*)و", preview: "Everything clicked today!" },
-  "2026-01-08": { mood: "(っ◞‸◟ c)", preview: "Missing old friends..." },
+// Helper to get mood emoji
+const getMoodEmoji = (mood?: string): string => {
+  if (!mood) return "";
+  const moodMap: Record<string, string> = {
+    "Frustrated": "(¬`‸´¬)",
+    "Sad": "(っ◞‸◟ c)",
+    "Tired": "(੭ ;´ - `;)੭",
+    "Neutral": "( •_• )",
+    "Happy": "( - ‿-)",
+    "Great": "٩(ˊᗜˋ*)و",
+  };
+  return moodMap[mood] || "";
 };
 
 const History = () => {
@@ -38,9 +45,34 @@ const History = () => {
 
   const handleDayClick = (date: Date) => {
     const dateKey = format(date, "yyyy-MM-dd");
-    if (sampleEntries[dateKey]) {
-      navigate("/write", { state: { date, viewOnly: true } });
+    const entries = storageService.getEntriesByDate(dateKey);
+
+    eventTracker.track("calendar_date_clicked", {
+      page: "calendar",
+      date: dateKey,
+    });
+
+    if (entries.length > 0) {
+      eventTracker.track("entry_opened_from_calendar", {
+        page: "calendar",
+        date: dateKey,
+      });
+      // Navigate to view entries for this date
+      navigate("/write", { state: { date, viewOnly: true, entries } });
     }
+  };
+
+  // Get entries for display
+  const getEntriesForDate = (dateKey: string) => {
+    return storageService.getEntriesByDate(dateKey);
+  };
+
+  // Get recent entries for preview
+  const getRecentEntries = () => {
+    const allEntries = storageService.getEntries();
+    return allEntries
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 3);
   };
 
   return (
@@ -77,11 +109,11 @@ const History = () => {
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-          
+
           <h2 className="font-serif text-xl text-[#411E03]">
             {format(currentMonth, "MMMM yyyy")}
           </h2>
-          
+
           <button
             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
             className="p-2 hover:bg-[#D7CDC1] rounded-lg transition-colors text-[#411E03]"
@@ -112,7 +144,10 @@ const History = () => {
               }
 
               const dateKey = format(day, "yyyy-MM-dd");
-              const entry = sampleEntries[dateKey];
+              const entries = getEntriesForDate(dateKey);
+              const hasEntries = entries.length > 0;
+              const mood = storageService.getMoodByDate(dateKey);
+              const moodEmoji = getMoodEmoji(mood);
               const isCurrentMonth = isSameMonth(day, currentMonth);
               const isCurrentDay = isToday(day);
 
@@ -123,20 +158,20 @@ const History = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.01 }}
                   onClick={() => handleDayClick(day)}
-                  disabled={!entry}
+                  disabled={!hasEntries}
                   className={`
                     aspect-square rounded-lg flex flex-col items-center justify-center
                     text-sm transition-all relative
                     ${!isCurrentMonth ? "opacity-30" : ""}
                     ${isCurrentDay ? "ring-2 ring-[#94AA78]" : ""}
-                    ${entry ? "hover:bg-[#94AA78]/20 cursor-pointer" : "cursor-default"}
+                    ${hasEntries ? "hover:bg-[#94AA78]/20 cursor-pointer" : "cursor-default"}
                   `}
                 >
-                  <span className={`font-pixel ${entry ? "text-[#411E03]" : "text-[#846851]"}`}>
+                  <span className={`font-pixel ${hasEntries ? "text-[#411E03]" : "text-[#846851]"}`}>
                     {format(day, "d")}
                   </span>
-                  {entry && (
-                    <span className="text-[10px] mt-0.5 font-pixel leading-none">{entry.mood}</span>
+                  {moodEmoji && (
+                    <span className="text-[10px] mt-0.5 font-pixel leading-none">{moodEmoji}</span>
                   )}
                 </motion.button>
               );
@@ -152,29 +187,38 @@ const History = () => {
           className="mt-8 space-y-4 relative z-10"
         >
           <h3 className="font-pixel text-xl mb-4 text-[#411E03]">Recent entries</h3>
-          
-          {Object.entries(sampleEntries)
-            .slice(0, 3)
-            .map(([dateKey, entry], index) => (
-              <motion.div
-                key={dateKey}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className="p-4 paper-grid flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow bg-[#D7CDC1]/60"
-                onClick={() => navigate("/write")}
-              >
-                <span className="text-sm font-pixel">{entry.mood}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-pixel text-sm text-[#846851]">
-                    {format(new Date(dateKey), "MMMM d")}
-                  </p>
-                  <p className="font-serif text-[#411E03] truncate">
-                    {entry.preview}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+
+          {getRecentEntries().length > 0 ? (
+            getRecentEntries().map((entry, index) => {
+              const moodEmoji = getMoodEmoji(entry.mood);
+              const preview = entry.content.length > 50
+                ? entry.content.substring(0, 50) + "..."
+                : entry.content;
+
+              return (
+                <motion.div
+                  key={entry.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  className="p-4 paper-grid flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow bg-[#D7CDC1]/60"
+                  onClick={() => navigate("/write", { state: { entry, viewOnly: true } })}
+                >
+                  {moodEmoji && <span className="text-sm font-pixel">{moodEmoji}</span>}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-pixel text-sm text-[#846851]">
+                      {format(new Date(entry.date), "MMMM d")}
+                    </p>
+                    <p className="font-serif text-[#411E03] truncate">
+                      {preview}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })
+          ) : (
+            <p className="font-serif text-[#846851] italic">No entries yet</p>
+          )}
         </motion.div>
       </div>
     </Layout>

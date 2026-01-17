@@ -60,6 +60,58 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Backend Setup
+
+This project includes a backend server for persistent storage, behavioral analytics, and secure Gemini API integration.
+
+### Quick Start
+
+1. **Navigate to backend directory:**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Create `.env` file:**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Then edit `.env` and add your Gemini API key:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   PORT=4000
+   DB_PATH=./data/journal.db
+   ```
+   
+   Get your API key from: https://makersuite.google.com/app/apikey
+
+4. **Start the backend server:**
+   ```bash
+   npm run dev
+   ```
+   
+   The server will run on `http://localhost:4000`
+
+5. **Configure frontend:**
+   
+   Create `.env.local` in the project root:
+   ```env
+   VITE_API_URL=http://localhost:4000
+   ```
+
+6. **Start the frontend:**
+   ```bash
+   # In the project root
+   npm run dev
+   ```
+
+See `backend/README.md` for more details.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.

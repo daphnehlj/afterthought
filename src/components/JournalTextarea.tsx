@@ -5,14 +5,16 @@ import KeyboardKey from "./KeyboardKey";
 interface JournalTextareaProps {
   value: string;
   onChange: (value: string) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   prompt?: string;
   date?: Date;
   mood?: string;
 }
 
-const JournalTextarea = ({ 
-  value, 
-  onChange, 
+const JournalTextarea = ({
+  value,
+  onChange,
+  onKeyDown,
   prompt,
   date = new Date(),
   mood
@@ -29,8 +31,8 @@ const JournalTextarea = ({
   }, [value]);
 
   const formatDate = (d: Date) => {
-    const months = ["January", "February", "March", "April", "May", "June", 
-                    "July", "August", "September", "October", "November", "December"];
+    const months = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
     const day = d.getDate();
     const suffix = day === 1 ? "st" : day === 2 ? "nd" : day === 3 ? "rd" : "th";
     return `${months[d.getMonth()]} ${day}${suffix}`;
@@ -51,11 +53,11 @@ const JournalTextarea = ({
         {mood && (
           <span className="text-3xl">{
             mood === "Frustrated" ? "😤" :
-            mood === "Sad" ? "😢" :
-            mood === "Tired" ? "😔" :
-            mood === "Neutral" ? "😐" :
-            mood === "Happy" ? "😊" :
-            mood === "Great" ? "😎" : "😐"
+              mood === "Sad" ? "😢" :
+                mood === "Tired" ? "😔" :
+                  mood === "Neutral" ? "😐" :
+                    mood === "Happy" ? "😊" :
+                      mood === "Great" ? "😎" : "😐"
           }</span>
         )}
       </div>
@@ -72,6 +74,7 @@ const JournalTextarea = ({
         ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
         placeholder="What's on your mind today..."
         className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none font-serif text-lg leading-relaxed placeholder:text-muted-foreground/50"
       />
