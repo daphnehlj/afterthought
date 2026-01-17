@@ -1,21 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Layout from "@/components/Layout";
 import PaperContainer from "@/components/PaperContainer";
 import KeyboardKey from "@/components/KeyboardKey";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Check } from "lucide-react";
+import { storageService, UserSettings } from "@/lib/storage";
+import { eventTracker } from "@/lib/eventTracking";
 
 const Profile = () => {
-  const [settings, setSettings] = useState({
-    aiPrompts: true,
+  const [settings, setSettings] = useState<UserSettings>({
+    dailyPrompts: true,
     shareWithTherapist: false,
     voiceInput: true,
     dailyReminder: false,
   });
 
-  const toggleSetting = (key: keyof typeof settings) => {
-    setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+  useEffect(() => {
+    // Load settings from storage
+    const savedSettings = storageService.getSettings();
+    setSettings(savedSettings);
+  }, []);
+
+  const toggleSetting = (key: keyof UserSettings) => {
+    const updated = { ...settings, [key]: !settings[key] };
+    setSettings(updated);
+    storageService.saveSettings(updated);
+
+    eventTracker.track("setting_changed", {
+      page: "profile",
+      setting: key,
+      value: updated[key],
+    });
   };
 
   return (
@@ -61,9 +77,9 @@ const Profile = () => {
                   Receive gentle writing suggestions
                 </p>
               </div>
-              <Switch 
-                checked={settings.aiPrompts}
-                onCheckedChange={() => toggleSetting('aiPrompts')}
+              <Switch
+                checked={settings.dailyPrompts}
+                onCheckedChange={() => toggleSetting('dailyPrompts')}
                 className="data-[state=checked]:bg-[#94AA78] data-[state=unchecked]:bg-[#846851]/40"
               />
             </div>
@@ -76,7 +92,7 @@ const Profile = () => {
                   Share selected insights with your therapist
                 </p>
               </div>
-              <Switch 
+              <Switch
                 checked={settings.shareWithTherapist}
                 onCheckedChange={() => toggleSetting('shareWithTherapist')}
                 className="data-[state=checked]:bg-[#94AA78] data-[state=unchecked]:bg-[#846851]/40"
@@ -91,7 +107,7 @@ const Profile = () => {
                   Enable voice-to-text for entries
                 </p>
               </div>
-              <Switch 
+              <Switch
                 checked={settings.voiceInput}
                 onCheckedChange={() => toggleSetting('voiceInput')}
                 className="data-[state=checked]:bg-[#94AA78] data-[state=unchecked]:bg-[#846851]/40"
@@ -106,7 +122,7 @@ const Profile = () => {
                   Gentle nudge to write each day
                 </p>
               </div>
-              <Switch 
+              <Switch
                 checked={settings.dailyReminder}
                 onCheckedChange={() => toggleSetting('dailyReminder')}
                 className="data-[state=checked]:bg-[#94AA78] data-[state=unchecked]:bg-[#846851]/40"
@@ -123,7 +139,7 @@ const Profile = () => {
           className="mt-8 relative z-10"
         >
           <h3 className="font-pixel text-xl mb-4 text-[#411E03]">Therapist connection</h3>
-          
+
           <PaperContainer className="p-6 text-center bg-[#D7CDC1]/80">
             <p className="font-serif text-[#846851] mb-4">
               Connect with your therapist to share selected insights from your journal.

@@ -6,6 +6,11 @@ import MoodSelector from "@/components/MoodSelector";
 import Bookshelf from "@/components/Bookshelf";
 import KeyboardKey from "@/components/KeyboardKey";
 import { Edit3 } from "lucide-react";
+import { eventTracker } from "@/lib/eventTracking";
+import { storageService } from "@/lib/storage";
+import { behavioralAnalytics } from "@/lib/behavioralAnalytics";
+import { geminiService } from "@/lib/gemini";
+import { format } from "date-fns";
 
 function useTypewriter(text: string, speed = 220, startDelay = 1000) {
   const [shown, setShown] = useState("");
@@ -51,6 +56,68 @@ const BlinkingCursor = ({ className = "" }: { className?: string }) => (
 const Home = () => {
   const navigate = useNavigate();
   const [selectedMood, setSelectedMood] = useState<string>();
+  const [dailyPrompt, setDailyPrompt] = useState<string | null>(null);
+  const [promptLoading, setPromptLoading] = useState(false);
+
+  // Load today's mood if exists
+  useEffect(() => {
+    const today = format(new Date(), "yyyy-MM-dd");
+    const todayMood = storageService.getMoodByDate(today);
+    if (todayMood) {
+      setSelectedMood(todayMood);
+    }
+  }, []);
+
+  // Load daily prompt - regenerate on every page refresh
+  useEffect(() => {
+    const loadPrompt = async () => {
+      const settings = storageService.getSettings();
+
+      if (!settings.dailyPrompts) {
+        setDailyPrompt("How are you feeling today?");
+        eventTracker.track("prompt_viewed", { page: "home" });
+        return;
+      }
+
+      setPromptLoading(true);
+      eventTracker.track("prompt_viewed", { page: "home" });
+
+      try {
+        // Get recent entries to detect upcoming events
+        const entries = storageService.getEntries();
+        const recentEntries = entries.slice(-5);
+        const allContent = recentEntries.map(e => e.content).join(" ");
+
+        // Look for date mentions (interviews, exams, meetings, etc.)
+        const datePatterns = [
+          /(?:tomorrow|next week|next month|on \w+day|this \w+day)/gi,
+          /(?:interview|exam|meeting|appointment|deadline)/gi,
+        ];
+        const hasUpcomingEvents = datePatterns.some(pattern => pattern.test(allContent));
+
+        // Aggregate behavior with context
+        const behaviorSummary = behavioralAnalytics.aggregate();
+        const recentEntry = behavioralAnalytics.getRecentEntryExcerpt();
+
+        // Add context about upcoming events if detected
+        const enhancedSummary = {
+          ...behaviorSummary,
+          has_upcoming_events: hasUpcomingEvents,
+          recent_content_themes: allContent.slice(-500), // Last 500 chars for context
+        };
+
+        const prompt = await geminiService.generatePrompt(enhancedSummary, recentEntry);
+        setDailyPrompt(prompt);
+      } catch (error) {
+        console.error("Failed to generate prompt:", error);
+        setDailyPrompt("What's been on your mind lately?");
+      } finally {
+        setPromptLoading(false);
+      }
+    };
+
+    loadPrompt();
+  }, []); // Empty deps - regenerates on mount/refresh
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -82,8 +149,18 @@ const Home = () => {
     if (isTyping) setShowEndCursor(false);
   }, [isTyping, typedGreeting, fullGreeting]);
 
+  const handleMoodSelect = (mood: string) => {
+    setSelectedMood(mood);
+    const today = format(new Date(), "yyyy-MM-dd");
+    storageService.saveMood(today, mood);
+    eventTracker.track("mood_selected", {
+      page: "home",
+      mood_icon: mood,
+    });
+  };
+
   const handleStartJournal = () => {
-    navigate("/prompt", { state: { mood: selectedMood } });
+    navigate("/prompt", { state: { mood: selectedMood, prompt: dailyPrompt } });
   };
 
   return (
@@ -142,7 +219,13 @@ const Home = () => {
           className="flex justify-end mb-6"
         >
           <div className="bg-[#94AA78]/80 text-[#411E03] px-4 py-2 rounded-2xl rounded-br-sm shadow-md">
-            <span className="font-pixel text-sm">A quiet day for reflection</span>
+            {promptLoading ? (
+              <span className="font-pixel text-sm">Loading prompt...</span>
+            ) : dailyPrompt ? (
+              <span className="font-pixel text-sm">{dailyPrompt}</span>
+            ) : (
+              <span className="font-pixel text-sm">A quiet day for reflection</span>
+            )}
           </div>
         </motion.div>
 
@@ -154,7 +237,7 @@ const Home = () => {
         >
           <MoodSelector
             selectedMood={selectedMood}
-            onSelectMood={setSelectedMood}
+            onSelectMood={handleMoodSelect}
           />
         </motion.div>
 

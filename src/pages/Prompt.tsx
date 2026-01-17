@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft, Sparkles } from "lucide-react";
@@ -6,6 +6,8 @@ import Layout from "@/components/Layout";
 import DatePill from "@/components/DatePill";
 import PromptCard from "@/components/PromptCard";
 import Bookshelf from "@/components/Bookshelf";
+import { eventTracker } from "@/lib/eventTracking";
+import { storageService } from "@/lib/storage";
 
 // Sample prompts - would be AI-generated based on journal history
 const samplePrompts = [
@@ -20,16 +22,29 @@ const Prompt = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const mood = location.state?.mood;
+  const promptFromHome = location.state?.prompt;
 
   const [currentPrompt] = useState(
-    samplePrompts[Math.floor(Math.random() * samplePrompts.length)]
+    promptFromHome || samplePrompts[Math.floor(Math.random() * samplePrompts.length)]
   );
+  const [promptId] = useState(`prompt_${Date.now()}`);
+
+  useEffect(() => {
+    eventTracker.track("prompt_viewed", {
+      page: "home",
+      prompt_id: promptId,
+    });
+  }, [promptId]);
 
   const handleContinue = () => {
-    navigate("/write", { state: { prompt: currentPrompt, mood } });
+    navigate("/write", { state: { prompt: currentPrompt, mood, promptId } });
   };
 
   const handleSkip = () => {
+    eventTracker.track("prompt_skipped", {
+      page: "home",
+      prompt_id: promptId,
+    });
     navigate("/write", { state: { mood } });
   };
 
@@ -42,15 +57,15 @@ const Prompt = () => {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-between mb-8"
         >
-          <button 
+          <button
             onClick={() => navigate(-1)}
             className="text-foreground/60 hover:text-foreground transition-colors"
           >
             <ChevronLeft className="w-8 h-8" />
           </button>
-          
+
           <DatePill />
-          
+
           <button className="text-foreground/60 hover:text-foreground transition-colors">
             <Sparkles className="w-6 h-6" />
           </button>
