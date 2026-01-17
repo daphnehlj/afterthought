@@ -70,6 +70,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Direct palette colors for explicit use
+        palette: {
+          brown: {
+            dark: "#411E03",
+            mid: "#846851",
+          },
+          tan: "#D6B38D",
+          olive: "#8A895F",
+          cream: "#D7CDC1",
+          sage: "#94AA78",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
