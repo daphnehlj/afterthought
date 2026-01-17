@@ -2,21 +2,25 @@ import { useNavigate } from "react-router-dom";
 import BookSpine from "./BookSpine";
 import { motion } from "framer-motion";
 
-const Bookshelf = () => {
+interface BookshelfProps {
+  booksTranslateX?: string;
+}
+
+const Bookshelf = ({ booksTranslateX = "translate-x-[250px]" }: BookshelfProps) => {
   const navigate = useNavigate();
 
   const books = [
     { title: "Reflections", color: "analysis" as const, path: "/analysis", slant: "left" as const },
     { title: "Daily Thoughts", color: "sage" as const, path: "/write", slant: "none" as const },
     { title: "History", color: "olive" as const, path: "/history", slant: "none" as const },
-    { title: "Profile", color: "profile" as const, path: "/profile", slant: "left" as const },
+    { title: "Profile", color: "cream" as const, path: "/profile", slant: "left" as const },
   ];
 
   return (
     <div className="relative">
       {/* Books */}
       <motion.div 
-        className="flex items-end justify-center gap-0.5 px-4"
+        className={`flex items-end justify-center gap-0.5 px-4 ${booksTranslateX}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
