@@ -50,7 +50,7 @@ export class ApiClient {
         behavior_summary?: any;
         recent_entry_excerpt?: string | null;
         session_id?: string;
-        type?: 'prompt' | 'analysis';
+        type?: 'prompt' | 'analysis' | 'continuation';
     }) {
         try {
             const response = await fetch(`${API_BASE_URL}/api/gemini`, {

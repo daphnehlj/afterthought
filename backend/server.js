@@ -199,6 +199,13 @@ app.post('/api/gemini', async (req, res) => {
                 suggested_prompt: prompt,
                 trace_logs: [`Generated prompt: "${prompt}"`],
             };
+        } else if (type === 'continuation') {
+            // Generate context-aware continuation prompt
+            const prompt = await geminiService.generateContinuationPrompt(summary, excerpt);
+            result = {
+                suggested_prompt: prompt,
+                trace_logs: [`Generated continuation prompt: "${prompt}"`],
+            };
         } else {
             // Full analysis
             result = await geminiService.analyzePatterns(summary, excerpt);

@@ -79,20 +79,6 @@ const JournalTextarea = ({
         className="w-full min-h-[200px] bg-transparent resize-none focus:outline-none font-serif text-lg leading-relaxed placeholder:text-muted-foreground/50"
       />
 
-      {/* Voice input button */}
-      <div className="absolute bottom-4 left-4">
-        <KeyboardKey
-          onClick={toggleRecording}
-          size="md"
-          className={isRecording ? "animate-pulse" : ""}
-        >
-          {isRecording ? (
-            <MicOff className="w-5 h-5 text-destructive" />
-          ) : (
-            <Mic className="w-5 h-5" />
-          )}
-        </KeyboardKey>
-      </div>
 
       {/* Continue indicator */}
       {value.length > 0 && value.endsWith("...") && (

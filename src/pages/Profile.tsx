@@ -65,7 +65,7 @@ const Profile = () => {
         >
           <h2 className="font-pixel text-2xl md:text-3xl mb-6 text-[#411E03]">
             Settings<br />
-            &Privacy
+            & Privacy
           </h2>
 
           <PaperContainer className="divide-y divide-[#846851]/20 overflow-hidden bg-[#D7CDC1]/80">
@@ -173,14 +173,14 @@ const Profile = () => {
         </motion.div>
 
         {/* Action buttons */}
-        <div className="fixed bottom-28 left-4 right-4 flex justify-between pointer-events-none z-50">
+        {/* <div className="fixed bottom-28 left-4 right-4 flex justify-between pointer-events-none z-50">
           <KeyboardKey size="lg" className="pointer-events-auto">
             <Plus className="w-5 h-5" />
           </KeyboardKey>
           <KeyboardKey size="lg" className="pointer-events-auto">
             <Check className="w-5 h-5" />
           </KeyboardKey>
-        </div>
+        </div> */}
       </div>
     </Layout>
   );

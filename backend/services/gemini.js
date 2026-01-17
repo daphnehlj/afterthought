@@ -148,6 +148,74 @@ Return only the prompt text, nothing else.`;
         }
     }
 
+    async generateContinuationPrompt(behaviorSummary, recentEntryExcerpt = null) {
+        console.log("[GEMINI] Generating context-aware continuation prompt...");
+
+        const continuationPromptInstructions = `Generate a short, context-aware continuation prompt (1 sentence max) based on the user's recent journal content and writing behavior.
+
+STYLE GUIDELINES:
+- Conversational, warm, human tone
+- No "should", no "try to", no "it seems like"
+- Phrased as an invitation, not a task
+- Feels like a gentle nudge, not advice
+- Never judgmental or diagnostic
+- Avoid therapy language or instructions
+
+ANALYZE:
+- Recent journal content and themes
+- Detected hesitation signals (pauses, backspaces, unfinished thoughts)
+- Avoidance patterns (circling a topic without naming it)
+- Emotional intensity changes
+
+EXAMPLES OF GOOD TONE:
+- "You keep coming back to this moment — want to stay with it a bit longer?"
+- "You paused when you mentioned this. What feels hardest to say right now?"
+- "This part seems important. Want to write one more sentence about it?"
+- "You've touched on this a few times — want to look at it again?"
+
+Behavior Summary:
+${JSON.stringify(behaviorSummary, null, 2)}
+
+${recentEntryExcerpt ? `Recent entry excerpt: "${recentEntryExcerpt}"` : ""}
+
+Generate ONE short sentence (max) that reflects what the user has already written, feels conversational and warm, and invites them to continue if they want. Return only the prompt text, nothing else.`;
+
+        try {
+            const response = await this.callGemini(continuationPromptInstructions);
+
+            // Extract the prompt text
+            const promptMatch = response.match(/"suggested_prompt":\s*"([^"]+)"/);
+            if (promptMatch) {
+                const prompt = promptMatch[1];
+                console.log(`[GEMINI] Generated continuation prompt: "${prompt}"`);
+                return prompt;
+            }
+
+            // Try to extract quoted text
+            const quotedMatch = response.match(/"([^"]{20,120})"/);
+            if (quotedMatch) {
+                const prompt = quotedMatch[1];
+                console.log(`[GEMINI] Generated continuation prompt (extracted): "${prompt}"`);
+                return prompt;
+            }
+
+            // Try to extract any sentence ending with question mark
+            const questionMatch = response.match(/([^.!?]*\?)/);
+            if (questionMatch && questionMatch[1].length < 120) {
+                const prompt = questionMatch[1].trim();
+                console.log(`[GEMINI] Generated continuation prompt (question): "${prompt}"`);
+                return prompt;
+            }
+
+            console.log("[GEMINI] Using fallback continuation prompt");
+            return "Want to write a bit more about that?";
+        } catch (error) {
+            console.error("[GEMINI] Failed to generate continuation prompt:", error);
+            console.log("[GEMINI] Using fallback continuation prompt due to error");
+            return "Want to write a bit more about that?";
+        }
+    }
+
     async analyzePatterns(behaviorSummary, recentEntryExcerpt = null) {
         const userPrompt = `Analyze this behavioral data and provide insights:
 
