@@ -6,116 +6,120 @@
 @import "@fontsource/source-serif-4/400.css";
 @import "@fontsource/source-serif-4/400-italic.css";
 
-/* Calm Mental Health Journal Design System */
+/* Calm Mental Health Journal Design System 
+   Palette: #411E03, #846851, #D6B38D, #8A895F, #D7CDC1, #94AA78 */
 
 @layer base {
   :root {
-    /* Cream paper backgrounds */
-    --background: 40 30% 96%;
-    --foreground: 30 20% 20%;
+    /* Core palette converted to HSL */
+    /* #D7CDC1 - warm cream background */
+    --background: 30 20% 80%;
+    /* #411E03 - deep brown foreground */
+    --foreground: 25 92% 14%;
 
-    /* Paper surfaces */
-    --card: 45 35% 94%;
-    --card-foreground: 30 20% 20%;
+    /* #D7CDC1 - paper surfaces */
+    --card: 30 18% 80%;
+    --card-foreground: 25 92% 14%;
 
-    --popover: 45 35% 94%;
-    --popover-foreground: 30 20% 20%;
+    --popover: 30 18% 80%;
+    --popover-foreground: 25 92% 14%;
 
-    /* Sage green primary */
-    --primary: 85 25% 42%;
-    --primary-foreground: 45 35% 96%;
+    /* #94AA78 - muted sage green primary */
+    --primary: 90 23% 57%;
+    --primary-foreground: 30 18% 92%;
 
-    /* Soft beige secondary */
-    --secondary: 40 25% 88%;
-    --secondary-foreground: 30 20% 25%;
+    /* #D6B38D - soft tan secondary */
+    --secondary: 35 45% 70%;
+    --secondary-foreground: 25 92% 14%;
 
     /* Muted elements */
-    --muted: 40 20% 90%;
-    --muted-foreground: 30 15% 50%;
+    --muted: 30 15% 78%;
+    --muted-foreground: 25 30% 40%;
 
-    /* Warm accent */
-    --accent: 35 30% 85%;
-    --accent-foreground: 30 20% 25%;
+    /* #8A895F - olive accent */
+    --accent: 59 20% 45%;
+    --accent-foreground: 30 18% 92%;
 
     /* Soft destructive */
-    --destructive: 0 60% 55%;
+    --destructive: 0 45% 45%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Borders and inputs */
-    --border: 40 20% 85%;
-    --input: 40 20% 88%;
-    --ring: 85 25% 42%;
+    /* #846851 - warm brown borders */
+    --border: 25 25% 42%;
+    --input: 30 18% 75%;
+    --ring: 90 23% 57%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
-    /* Grid paper lines */
-    --grid-line: 85 20% 80%;
-    --grid-accent: 85 25% 75%;
+    /* Grid paper lines - muted sage */
+    --grid-line: 59 15% 72%;
+    --grid-accent: 90 18% 68%;
 
-    /* Keyboard key */
-    --key-bg: 40 15% 92%;
-    --key-shadow: 30 15% 70%;
-    --key-text: 30 20% 30%;
+    /* Keyboard key - warm cream tones */
+    --key-bg: 30 18% 82%;
+    --key-shadow: 25 25% 50%;
+    --key-text: 25 92% 14%;
 
     /* Typography */
     --font-pixel: 'VT323', monospace;
     --font-serif: 'Source Serif 4', Georgia, serif;
 
-    /* Sidebar (for future use) */
-    --sidebar-background: 40 30% 96%;
-    --sidebar-foreground: 30 20% 25%;
-    --sidebar-primary: 85 25% 42%;
-    --sidebar-primary-foreground: 45 35% 96%;
-    --sidebar-accent: 40 25% 88%;
-    --sidebar-accent-foreground: 30 20% 25%;
-    --sidebar-border: 40 20% 85%;
-    --sidebar-ring: 85 25% 42%;
+    /* Sidebar */
+    --sidebar-background: 30 20% 80%;
+    --sidebar-foreground: 25 92% 14%;
+    --sidebar-primary: 90 23% 57%;
+    --sidebar-primary-foreground: 30 18% 92%;
+    --sidebar-accent: 35 45% 70%;
+    --sidebar-accent-foreground: 25 92% 14%;
+    --sidebar-border: 25 25% 42%;
+    --sidebar-ring: 90 23% 57%;
   }
 
   .dark {
-    --background: 30 15% 12%;
-    --foreground: 40 20% 90%;
+    /* Dark mode with same palette, adjusted for dark */
+    --background: 25 30% 10%;
+    --foreground: 30 18% 85%;
 
-    --card: 30 15% 15%;
-    --card-foreground: 40 20% 90%;
+    --card: 25 25% 14%;
+    --card-foreground: 30 18% 85%;
 
-    --popover: 30 15% 15%;
-    --popover-foreground: 40 20% 90%;
+    --popover: 25 25% 14%;
+    --popover-foreground: 30 18% 85%;
 
-    --primary: 85 30% 50%;
-    --primary-foreground: 30 15% 12%;
+    --primary: 90 20% 45%;
+    --primary-foreground: 25 30% 10%;
 
-    --secondary: 30 15% 20%;
-    --secondary-foreground: 40 20% 85%;
+    --secondary: 35 30% 25%;
+    --secondary-foreground: 30 18% 85%;
 
-    --muted: 30 15% 18%;
-    --muted-foreground: 40 15% 60%;
+    --muted: 25 20% 18%;
+    --muted-foreground: 30 15% 55%;
 
-    --accent: 30 15% 22%;
-    --accent-foreground: 40 20% 85%;
+    --accent: 59 15% 30%;
+    --accent-foreground: 30 18% 85%;
 
-    --destructive: 0 50% 45%;
+    --destructive: 0 40% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 30 15% 22%;
-    --input: 30 15% 20%;
-    --ring: 85 30% 50%;
+    --border: 25 20% 25%;
+    --input: 25 20% 20%;
+    --ring: 90 20% 45%;
 
-    --grid-line: 30 10% 20%;
-    --grid-accent: 85 20% 30%;
+    --grid-line: 25 15% 18%;
+    --grid-accent: 90 15% 25%;
 
-    --key-bg: 30 12% 18%;
-    --key-shadow: 30 10% 10%;
-    --key-text: 40 15% 80%;
+    --key-bg: 25 20% 16%;
+    --key-shadow: 25 15% 8%;
+    --key-text: 30 15% 80%;
 
-    --sidebar-background: 30 15% 12%;
-    --sidebar-foreground: 40 20% 90%;
-    --sidebar-primary: 85 30% 50%;
-    --sidebar-primary-foreground: 30 15% 12%;
-    --sidebar-accent: 30 15% 22%;
-    --sidebar-accent-foreground: 40 20% 85%;
-    --sidebar-border: 30 15% 22%;
-    --sidebar-ring: 85 30% 50%;
+    --sidebar-background: 25 30% 10%;
+    --sidebar-foreground: 30 18% 85%;
+    --sidebar-primary: 90 20% 45%;
+    --sidebar-primary-foreground: 25 30% 10%;
+    --sidebar-accent: 25 20% 18%;
+    --sidebar-accent-foreground: 30 18% 85%;
+    --sidebar-border: 25 20% 25%;
+    --sidebar-ring: 90 20% 45%;
   }
 }
 
@@ -149,7 +153,7 @@
       linear-gradient(90deg, hsl(var(--grid-line)) 1px, transparent 1px);
     background-size: 24px 24px;
     border-radius: var(--radius);
-    border: 1px solid hsl(var(--border));
+    border: 1px solid hsl(var(--border) / 0.3);
   }
 
   /* Keyboard key style button */
@@ -157,13 +161,13 @@
     background: linear-gradient(
       180deg,
       hsl(var(--key-bg)) 0%,
-      hsl(40 12% 88%) 100%
+      hsl(30 15% 78%) 100%
     );
-    border-radius: 6px;
+    border-radius: 4px;
     box-shadow: 
       0 4px 0 hsl(var(--key-shadow)),
-      0 6px 10px -2px hsl(30 10% 50% / 0.3),
-      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+      0 6px 10px -2px hsl(25 20% 40% / 0.25),
+      inset 0 1px 0 hsl(0 0% 100% / 0.4);
     color: hsl(var(--key-text));
     transition: all 0.1s ease;
   }
@@ -172,25 +176,25 @@
     transform: translateY(1px);
     box-shadow: 
       0 3px 0 hsl(var(--key-shadow)),
-      0 4px 8px -2px hsl(30 10% 50% / 0.3),
-      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+      0 4px 8px -2px hsl(25 20% 40% / 0.25),
+      inset 0 1px 0 hsl(0 0% 100% / 0.4);
   }
 
   .keyboard-key:active {
     transform: translateY(3px);
     box-shadow: 
       0 1px 0 hsl(var(--key-shadow)),
-      0 2px 4px -2px hsl(30 10% 50% / 0.3),
-      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+      0 2px 4px -2px hsl(25 20% 40% / 0.25),
+      inset 0 1px 0 hsl(0 0% 100% / 0.4);
   }
 
   /* Stamp/paper cutout style */
   .stamp-border {
-    background: hsl(45 40% 92%);
-    border-radius: 4px;
+    background: hsl(35 45% 82%);
+    border-radius: 2px;
     box-shadow: 
       inset 0 0 0 4px hsl(var(--background)),
-      0 2px 8px hsl(30 20% 50% / 0.15);
+      0 2px 8px hsl(25 20% 40% / 0.12);
     mask-image: 
       radial-gradient(circle at 0 0, transparent 4px, black 4px),
       radial-gradient(circle at 100% 0, transparent 4px, black 4px),
@@ -217,8 +221,8 @@
 
   /* Pill button (Continue/Skip style) */
   .pill-button {
-    @apply px-8 py-3 rounded-full border-2 border-border bg-transparent font-serif text-lg;
-    @apply hover:bg-secondary/50 transition-colors;
+    @apply px-8 py-3 rounded-full border border-border/50 bg-transparent font-serif text-lg;
+    @apply hover:bg-secondary/30 transition-colors;
   }
 
   /* Book spine style */
@@ -228,13 +232,28 @@
     text-orientation: mixed;
     background: linear-gradient(
       90deg,
-      hsl(85 25% 35%) 0%,
-      hsl(85 25% 42%) 50%,
-      hsl(85 25% 38%) 100%
+      hsl(59 20% 38%) 0%,
+      hsl(59 20% 45%) 50%,
+      hsl(59 20% 40%) 100%
     );
-    border-radius: 4px 8px 8px 4px;
+    border-radius: 2px;
     box-shadow: 
-      inset -4px 0 8px hsl(85 25% 25% / 0.3),
-      2px 4px 8px hsl(30 20% 30% / 0.2);
+      inset -4px 0 8px hsl(59 20% 30% / 0.3),
+      2px 4px 8px hsl(25 20% 25% / 0.15);
+  }
+
+  /* Scrapbook decorative elements */
+  .scrapbook-tape {
+    background: linear-gradient(
+      135deg,
+      hsl(35 45% 75% / 0.6) 0%,
+      hsl(35 45% 70% / 0.5) 100%
+    );
+    box-shadow: 0 1px 3px hsl(25 20% 40% / 0.1);
+  }
+
+  .scrapbook-sticker {
+    background: hsl(90 23% 57% / 0.15);
+    border: 1px solid hsl(90 23% 57% / 0.25);
   }
 }

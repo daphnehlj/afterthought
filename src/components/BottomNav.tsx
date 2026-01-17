@@ -1,11 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Users, Sun, User } from "lucide-react";
+import { Home, Calendar, PenLine, MessageCircle, User } from "lucide-react";
 import KeyboardKey from "./KeyboardKey";
 
 const navItems = [
   { path: "/", icon: Home, label: "Home" },
-  { path: "/history", icon: Users, label: "History" },
-  { path: "/analysis", icon: Sun, label: "Analysis" },
+  { path: "/history", icon: Calendar, label: "History" },
+  { path: "/write", icon: PenLine, label: "Write" },
+  { path: "/analysis", icon: MessageCircle, label: "Analysis" },
   { path: "/profile", icon: User, label: "Profile" },
 ];
 
