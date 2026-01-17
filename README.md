@@ -1,4 +1,4 @@
-# **Afterthought 📝**
+# **AfterThought 📝**
 
 AI-powered journaling with behavioral insights
 
