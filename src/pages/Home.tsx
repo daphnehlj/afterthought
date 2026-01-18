@@ -212,7 +212,7 @@ const Home = () => {
               className="inline-block mt-12 px-4 py-1 bg-[#D6B38D]/40 rounded-md"
             >
               <span className="font-serif italic text-6xl text-[#411E03]">
-                Daphne
+                Sally
               </span>
             </motion.div>
           )}
