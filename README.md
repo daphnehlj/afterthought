@@ -49,17 +49,24 @@ Users stay fully in control of what insights remain private or are shared with a
 
    Frontend:
 
-   React + Vite
+   * React
 
-   LocalStorage
+   * Tailwind
+
+   * Framer
+
+   * TypeScript
 
    Backend:
 
-   Node.js + Express
+   * SQLite
 
-   Google Gemini 2.5 Flash
+   * Node.js
+   
+   * Express.js
 
-   Real-time terminal logs for AI reasoning
+   * Google Gemini 2.5 Pro
+
 
 # Running the Project
 
